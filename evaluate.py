@@ -222,7 +222,7 @@ def main():
     print("Loading dataset...")
     if args.dataset == "mnist":
         train_size = 50000
-    elif args.dataset == "cifar10":
+    elif args.dataset == "cifar10" or args.dataset == "cifar100":
         train_size = 40000
     elif args.dataset == "imagenet":
         train_size = 2220

@@ -41,7 +41,7 @@ if args.dataset == "mnist":
     num_classes = 10
     train_size = 60000 - args.val_size
     # args.eps = 0.3
-elif args.dataset == "cifar10":
+elif args.dataset == "cifar10" or args.dataset == "cifar100":
     num_classes = 10
     train_size = 50000 - args.val_size
     # args.eps = 8/255
