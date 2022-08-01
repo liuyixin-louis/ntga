@@ -211,6 +211,8 @@ def main():
         x_train_adv = x_train_adv.reshape(-1, 28, 28, 1)
     elif args.dataset == "cifar10":
         x_train_adv = x_train_adv.reshape(-1, 32, 32, 3)
+    elif args.dataset == "ciar100":
+        x_train_adv = x_train_adv.reshape(-1, 32, 32, 3)
     elif args.dataset == "imagenet":
         x_train_adv = x_train_adv.reshape(-1, 224, 224, 3)
     else:
