@@ -2,7 +2,7 @@ import os
 import numpy as onp
 import matplotlib.pyplot as plt
 import tensorflow_datasets as tfds
-
+import tensorflow as tf
 
 def format_plot(title='', x='', y='', grid=True):  
     ax = plt.gca()
@@ -98,6 +98,51 @@ def _one_hot(x, k, dtype=onp.float32):
     """Create a one-hot encoding of x of size k."""
     return onp.array(x[:, None] == onp.arange(k), dtype)
 
+def get_dataset_imagenet():
+    print("Demonstration for using Imagenet2012 dataset with tensorflow datset")
+    # List all the datasets provided in the tensorflow_datasets
+    # print(tfds.list_builders())
+    # Step 1: get a dataset builder for the required dataset
+    dataset_name = "imagenet2012"
+    if dataset_name in tfds.list_builders():
+        imagenet_dataset_builder = tfds.builder(dataset_name)
+        print("retrived " + dataset_name + " builder")
+    else:
+        return
+    # Download and prepare the dataset internally
+    # The dataset should be downloaded to ~/tensorflow-datasets/download
+    # but for Imagenet case, we need to manually download the dataset and
+    # specify the manual_dir where the downloaded files are kept.
+    manual_dataset_dir = "/data/imagenet"
+    # The download_and_prepare function will assume that two files namely
+    # ILSVRC2012_img_train.tar and ILSVRC2012_img_val.tar are present in
+    # directory manual_dataset_dir + "/manual/imagenet2012"
+    imagenet_download_config = tfds.download.DownloadConfig(
+                                                manual_dir = manual_dataset_dir)
+    # Conditionally, download config can be passed as second argument.
+    imagenet_dataset_builder.download_and_prepare(
+                                    download_dir = manual_dataset_dir)
+    # Once this is complete (that just pre-process without downloading anything)
+    # it will create a director "~/tensorflow_datasets/imagenet2012/2.0.0"
+    # having 1000 train tfrecords and 5 validation tfrecords in addition to some
+    # bookkeeping json and label txt files.
+
+    # now, we get the tf.data.Dataset structure which tensorflow data-pipeline
+    # understands and process in tf graph.
+    imagenet_train = imagenet_dataset_builder.as_dataset(split=tfds.Split.TRAIN)
+    assert isinstance(imagenet_train, tf.data.Dataset)
+    imagenet_validation = imagenet_dataset_builder.as_dataset(
+                                                    split=tfds.Split.VALIDATION)
+    assert isinstance(imagenet_validation, tf.data.Dataset)
+
+    # Now we can peek into the sample images present in the dataset with take
+    (imagenet_example,) = imagenet_train.take(1) # returns a dictionary
+    train_images, train_labels = imagenet_example["image"], imagenet_example["label"]
+
+    (imagenet_example,) = imagenet_validation.take(1)
+    val_images, val_labels = imagenet_example["image"], imagenet_example["label"]
+
+    return train_images, train_labels, val_images, val_labels
 
 def get_dataset(name, n_train=None, n_test=None, permute_train=False, flatten=False, normalize=False):
     """Download, parse and process a dataset to unit scale and one-hot labels."""

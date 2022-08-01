@@ -40,15 +40,15 @@ else:
 if args.dataset == "mnist":
     num_classes = 10
     train_size = 60000 - args.val_size
-    args.eps = 0.3
+    # args.eps = 0.3
 elif args.dataset == "cifar10":
     num_classes = 10
     train_size = 50000 - args.val_size
-    args.eps = 8/255
+    # args.eps = 8/255
 elif args.dataset == "imagenet":
     num_classes = 2
     train_size = 2220
-    args.eps = 0.1
+    # args.eps = 0.1
     print("For ImageNet, please specify the file path manually.")
 else:
     raise ValueError("To load custom dataset, please modify the code directly.")
